@@ -1,0 +1,216 @@
+<div class="col-sm-12 dashboard">
+    <div class="row">
+        <ngx-spinner bdOpacity=0.4 bdColor="rgba(51,51,51,0.42)" size="medium" color="#2457c7" type="ball-spin-fade"
+            [fullScreen]="true">
+            <p style="color: white"> Loading... </p>
+        </ngx-spinner>
+        <div class="col-sm-3 sidenav p-0">
+            <app-side-bar style="width: 100%;"></app-side-bar>
+        </div>
+        <div class="col-sm-9 main">
+            <div class="col-12 top pt-1 p-0">
+                <app-header-after-login></app-header-after-login>
+            </div>
+            <div class="row">
+                <div class="col-5 p-2 scrollBar_cutom">
+                    <div class="row">
+                        <div class="col-9 p-2">
+                            <input type="text" placeholder="Tag Search" class="w-100" (keyup)="onchangeInput($event)"
+                                (input)="dt.filterGlobal($event.target.value, 'contains')" />
+                        </div>
+                        <div class="col-1 p-2 addNewTag">
+                            <i (click)="addTag()" class="fa fa-plus-circle" pTooltip="Add New Tag"
+                                tooltipPosition="right" aria-hidden="true"></i>
+                        </div>
+                        <div class="col-1 p-2 addNewTag">
+                            <app-csv-import headerType="Tag Name" name="Tags" action="importTags"
+                                (data)="eventHandler($event)"></app-csv-import>
+                        </div>
+                        <div class="col-1 p-2 addNewTag">
+                            <i (click)="dt.exportCSV()" class="fa fa-download" pTooltip="Export Tags"
+                                tooltipPosition="right" aria-hidden="true"></i>
+                        </div>
+                        <div *ngIf="show_TagList">
+                            <p class="font-weight-bolder vertical-align-text">{{no_Tags}}</p>
+                        </div>
+                    </div>
+                    <div style="height: 530px;overflow-y: scroll;">
+                        <p-table [exportFilename]="csvExportName" #dt [columns]="colstags" styleClass="ui-table-cars"
+                            selectionMode="single" [value]="tags" [reorderableColumns]="true"
+                            (onRowReorder)="onRowReorder($event)">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width:2.5em"></th>
+                                    <th *ngFor="let col of colstags" pReorderableColumn [ngSwitch]="col.field">
+                                    </th>
+                                    <th style="width:1em"></th>
+                                    <!-- <th style="width:1em"></th> -->
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-group let-rowData let-columns="columns"
+                                let-rowIndex="rowIndex">
+                                <tr [pSelectableRow]="rowData" [pReorderableRow]="rowIndex">
+                                    <td>
+                                        <i class="fa fa-arrows" pTooltip="Drag to change order" tooltipPosition="right"
+                                            style="display: flex;justify-content: center;" pReorderableRowHandle></i>
+                                    </td>
+                                    <td (click)="particularTag(rowData.id)" [routerLink]="['/tags']"
+                                        [queryParams]="{id:rowData.id}"
+                                        [ngStyle]="{'background-color':rowData.custom_color != null?rowData.custom_color:';'}"
+                                        style="color: white;" [ngClass]="colorChange(rowData.class)">{{rowData.name}}
+                                    </td>
+                                    <!-- <td><i pTooltip="Edit Tag" tooltipPosition="right" (click)="updateTag(rowIndex,rowData.id,rowData.name,rowData.class,rowData.custom_color)" class="fa fa-pencil text-waning" aria-hidden="true"></i></td> -->
+                                    <td>
+                                        <i pTooltip="Edit Tag" tooltipPosition="right"
+                                            (click)="updateTag(rowIndex,rowData.id,rowData.name,rowData.class,rowData.custom_color)"
+                                            class="fa fa-pencil text-waning mr-2" aria-hidden="true"></i>
+                                        <i pTooltip="Delete Tag" tooltipPosition="right"
+                                            (click)="deleteTag(rowIndex,rowData.id)" class="fa fa-trash text-danger"
+                                            aria-hidden="true"></i></td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                        <!--                         <div class="text-center mt-3">
+                            <ngx-spinner name="show_loader_forMoreList" bdColor="rgba(255,255,255,0.8)" size="medium"
+                                color="rgba(80,80,80,0.82)" type="ball-clip-rotate-multiple" [fullScreen]="false">
+                                <p style="color: white"> Loading... </p>
+                            </ngx-spinner>
+                            <button *ngIf="loaderOn" (click)="loadMoredata()" class="btn btn-secondary">Load
+                                More</button>
+                        </div> -->
+                    </div>
+                </div>
+                <div *ngIf="show_No_TagSelected" class="col-7 p-2">
+                    <p class="font-weight-bolder vertical-align-text">{{no_user_selected}}</p>
+                </div>
+                <div *ngIf="show_particularTagList" class="col-7 p-2 scrollBar_cutom">
+                    <h5 class="bg-purple-light text-center text-white p-2">Tagged Contacts</h5>
+                    <ngx-spinner name="show_particularTagList_loader" bdColor="rgba(255,255,255,0.8)" size="default"
+                        color="#0073fc" type="line-scale-pulse-out-rapid" [fullScreen]="false">
+                        <p style="color:#000"> Loading... </p>
+                    </ngx-spinner>
+                    <div *ngIf="show_particularTagList_Nouser">
+                        <p class="font-weight-bolder vertical-align-text">{{no_user}}</p>
+                    </div>
+                    <div class="col-12 mb-2" style="height: 530px;overflow-y: scroll;">
+                        <p-table #ds [columns]="colstag_user" styleClass="ui-table-cars tagged_users_container"
+                            [value]="tageduser">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <ng-container *ngFor="let col of colstag_user;let i=index">
+                                        <th *ngIf="col.field == 'profile_pic'" style="width:1.5em"></th>
+                                        <th *ngIf="col.field == 'fb_name'" style="width:7.5em"></th>
+                                    </ng-container>
+                                    <!-- <th *ngFor="let col of colstag_user;" [ngSwitch]="col.field">
+                                        
+                                    </th> -->
+                                    <th style="width:3em"></th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-group let-rowData let-columns="columns"
+                                let-rowIndex="rowIndex">
+                                <tr>
+                                    <td>
+                                        <img class="user_profile mr-2 imgBilling"
+                                            src="{{rowData.profile_pic?rowData.profile_pic:profile_image}}"
+                                            (error)="errorImageHandler($event)" />
+                                    </td>
+                                    <td style="overflow: hidden;">
+                                        <span pTooltip="{{rowData.fb_name}}"
+                                            tooltipPosition="right">{{rowData.fb_name}}</span>
+                                    </td>
+                                    <td class="tags" style="text-align:center;" tooltipPosition="right" pTooltip="{{tooltip}}">
+                                        <button (click)=showTags(rowData.tags,rowData.id) 
+                                            [ngStyle]="{'background-color':sameColorTags[rowIndex].custom_color != null?sameColorTags[rowIndex].custom_color:';'}"
+                                            style="color: white;"
+                                            [ngClass]="colorChange(sameColorTags[rowIndex].class)">{{sameColorTags[rowIndex].name}}
+                                        </button>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-dialog [(visible)]="displayaddTagModal" [modal]="true" [style]="{width: '40vw'}" [baseZIndex]="10000">
+    <p-messages [(value)]="msgs"></p-messages>
+    <h2>ADD TAG</h2>
+    <form [formGroup]="data" (ngSubmit)="submit()" class="form-group mt-2">
+        <input type="text" formControlName="tag_name" [ngClass]="classForValidation('tag_name')" name="tag_name"
+            class="form-control input-amount-enter" id="tag_name" placeholder="Tag name here">
+        <div *ngIf="submitted && h.tag_name.errors" class="invalid-feedback">
+            <div *ngIf="h.tag_name.errors.required">Tag is required</div>
+        </div>
+        <div *ngIf="submitted && !h.tag_name.errors" class="valid-feedback">
+            <div>TAG is correct</div>
+        </div>
+        <div class="mt-1 text-center">
+            <button class="btn btn-primary btn-lg w-50 mt-5 send-message-button">Submit Tag</button>
+        </div>
+    </form>
+</p-dialog>
+
+<p-dialog [(visible)]="displayUpdateTagModal" [modal]="true" [style]="{width: '40vw'}" [baseZIndex]="10000">
+    <p-messages [(value)]="msgs"></p-messages>
+    <h2>EDIT TAG</h2>
+    <form [formGroup]="data" (ngSubmit)="submit_updateTag()" class="form-group mt-2">
+        <input type="text" formControlName="tag_name" [ngClass]="classForValidation('tag_name')" name="tag_name"
+            class="form-control input-amount-enter" id="tag_name" placeholder="Tag name here">
+        <div *ngIf="submitted && h.tag_name.errors" class="invalid-feedback">
+            <div *ngIf="h.tag_name.errors.required">Tag is required</div>
+        </div>
+        <div *ngIf="submitted && !h.tag_name.errors" class="valid-feedback">
+            <div>TAG is correct</div>
+        </div>
+        <div class="mt-1 text-center">
+            <button class="btn btn-primary btn-lg w-50 mt-5 send-message-button">Save Tag</button>
+        </div>
+    </form>
+</p-dialog>
+
+<!-- SHOW TAGS START -->
+<p-dialog [(visible)]="displayUpdateShowTagModal" [modal]="true" [style]="{width: '40vw'}" [baseZIndex]="10000">
+    <p-header class="chat-msg-box">
+        <h5>Tags</h5>
+    </p-header>
+    <div class="col-12 p-2">
+        <ngx-spinner name="show_particularTag_loader" bdColor="rgba(255,255,255,0.8)" size="default" color="#0073fc"
+            type="line-scale-pulse-out-rapid" [fullScreen]="false">
+            <p style="color:#000"> Loading... </p>
+        </ngx-spinner>
+        <div *ngIf="show_TagList_foruser">
+            <p class="font-weight-bolder vertical-align-text">{{no_TagsList_forUser}}</p>
+        </div>
+        <div class="col-12 p-2">
+            <input type="text" placeholder="Tag Search" class="w-100"
+                (input)="dv.filterGlobal($event.target.value, 'contains')" />
+        </div>
+        <div class="col-12">
+            <p-table #dv [columns]="colsTagsForUser" styleClass="ui-table-cars" [value]="tagsForUser"
+                [(selection)]="selectedTags">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width:1em"></th>
+                        <th *ngFor="let col of colsTagsForUser" [ngSwitch]="col.field">
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-group let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                    <tr>
+                        <td style="cursor: pointer;">
+                            <p-tableCheckbox [value]="rowData" (click)="onSelect(rowData.id)">
+                            </p-tableCheckbox>
+                        </td>
+                        <td [ngStyle]="{'background-color':rowData.custom_color != null?rowData.custom_color:';'}"
+                            style="color: white;" [ngClass]="colorChange(rowData.class)">{{rowData.name}}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</p-dialog>

@@ -1,0 +1,186 @@
+<div class="col-sm-12 dashboard">
+    <div class="row">
+        <ngx-spinner bdOpacity=0.4 bdColor="rgba(51,51,51,0.42)" size="medium" color="#2457c7" type="ball-spin-fade"
+            [fullScreen]="true">
+            <p style="color: white"> Loading... </p>
+        </ngx-spinner>
+        <div class="col-sm-3 sidenav p-0">
+            <app-side-bar style="width: 100%;"></app-side-bar>
+        </div>
+        <div class="col-sm-9 main">
+            <div class="col-12 top pt-1 p-0">
+                <app-header-after-login></app-header-after-login>
+            </div>
+            <div class="row">
+                <div class="col-7 p-2 scrollBar_cutom">
+                    <div class="row">
+                        <div class="col-12 p-2">
+                            <input type="text" placeholder="Contact Search" class="w-100"
+                                (input)="dt.filterGlobal($event.target.value, 'contains')" />
+                        </div>
+                    </div>
+                    <div style="height: 530px;overflow-y: scroll;">
+                        <div *ngIf="NO_contacts_to_show_boolean" class="col-12 p-2 text-center font-weight-bolder">
+                            {{NO_contacts_to_show}}
+                        </div>
+                        <p-table #dt [columns]="colscontact" styleClass="ui-table-cars" selectionMode="single"
+                            [value]="contactList">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width:5.5em" *ngFor="let col of colscontact" pReorderableColumn
+                                        [ngSwitch]="col.field">
+                                        <!-- {{col.header}} -->
+                                    </th>
+                                    <th style="width:2em"></th>
+                                    <th style="width:2em"></th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-group let-rowData let-columns="columns"
+                                let-rowIndex="rowIndex">
+                                <tr [pSelectableRow]="rowData">
+                                    <td style="cursor: default;">
+                                        <img class="user_profile mr-2 imgBilling" src="{{rowData.profile_pic}}"
+                                            (error)="errorImageHandler($event)" />
+                                    </td>
+                                    <td pTooltip="{{rowData.fb_name}}" tooltipPosition="right" style="cursor: default;overflow: hidden;">{{rowData.fb_name}}</td>
+                                    <td style="cursor: pointer;">
+                                        <i pTooltip="Notes" tooltipPosition="right" (click)="openNote(rowData.fb_user_id?rowData.fb_user_id:rowData.fb_image_id)" class="fa fa-sticky-note-o"
+                                            aria-hidden="true">
+                                            Notes</i>
+
+                                    </td>
+                                    <td class="tags">
+                                        <a (click)="opentags(rowData.tags,rowData.id)" tooltipPosition="right" pTooltip="{{tooltip}}"><i class="fa fa-tags"
+                                            aria-hidden="true">
+                                            Tags</i></a>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+<!--                         <div class="text-center mt-3">
+                            <ngx-spinner name="show_loader_forMoreList" bdColor="rgba(255,255,255,0.8)" size="medium"
+                                color="rgba(80,80,80,0.82)" type="ball-clip-rotate-multiple" [fullScreen]="false">
+                                <p style="color: white"> Loading... </p>
+                            </ngx-spinner>
+                            <button *ngIf="loaderOn" (click)="loadMoredata()" class="btn btn-secondary">Load
+                                More</button>
+                        </div> -->
+                    </div>
+                </div>
+                <div *ngIf="show_No_TagSelected" class="col-5 p-2">
+                    <p class="font-weight-bolder vertical-align-text">{{no_user_selected}}</p>
+                </div>
+                <div *ngIf="opentag" class="col-5 p-2 scrollBar_cutom">
+                    <ngx-spinner name="show_particularTag_loader" bdColor="rgba(255,255,255,0.8)" size="default"
+                        color="#0073fc" type="line-scale-pulse-out-rapid" [fullScreen]="false">
+                        <p style="color:#000"> Loading... </p>
+                    </ngx-spinner>
+                    <div *ngIf="show_particularTagList_Nouser">
+                        <p class="font-weight-bolder vertical-align-text">{{no_user}}</p>
+                    </div>					
+                    <div class="col-12 p-2">
+						<h5 class="bg-purple-light text-center text-white p-2 mb-2">Tags</h5>
+                        <input type="text" placeholder="Tag Search" class="w-100"
+                            (input)="dv.filterGlobal($event.target.value, 'contains')" />
+                    </div>
+                    <div class="col-12" style="height: 530px;overflow-y: scroll;">
+                        <p-table #dv [columns]="colstags" styleClass="ui-table-cars" [value]="tags"
+                            [(selection)]="selectedTags">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width:1em"></th>
+                                    <th *ngFor="let col of colstags" [ngSwitch]="col.field">
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-group let-rowData let-columns="columns"
+                                let-rowIndex="rowIndex">
+                                <tr>
+                                    <td style="cursor: pointer;">
+                                        <p-tableCheckbox [value]="rowData" (click)="onSelect(rowData.id)">
+                                        </p-tableCheckbox>
+                                    </td>
+                                    <td [ngStyle]="{'background-color':rowData.custom_color != null?rowData.custom_color:';'}"
+                                        style="color: white;" [ngClass]="colorChange(rowData.class)">{{rowData.name}}
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+                <div *ngIf="opennote" class="col-5 p-2 scrollBar_cutom">
+                    <div class="row">
+                        <div class="col-1 p-2 addnote">
+                            <i (click)="addNotes()" class="fa fa-plus-square" pTooltip="Add Note" tooltipPosition="right" aria-hidden="true"></i>
+                        </div>
+						<div class="col-11">
+                            <h5 class="bg-purple-light text-center text-white p-2">Notes</h5>
+                        </div>
+                    </div>
+                    <div *ngIf="show_particularNotesList_Nouser">
+                        <p class="font-weight-bolder vertical-align-text">{{no_user_notes}}</p>
+                    </div>
+                    <ngx-spinner name="show_particularNote_loader" bdColor="rgba(255,255,255,0.8)" size="default"
+                        color="#0073fc" type="line-scale-pulse-out-rapid" [fullScreen]="false">
+                        <p style="color:#000"> Loading... </p>
+                    </ngx-spinner>
+                    <div class="col-12 mb-2" style="height: 530px;overflow-y: scroll;">
+                        <p-table #ds [columns]="colsnotes" styleClass="ui-table-cars" [value]="notesList">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th *ngFor="let col of colsnotes" [ngSwitch]="col.field">
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-group let-rowData let-columns="columns"
+                                let-rowIndex="rowIndex">
+                                <tr>
+                                    <td>
+                                        <div class="col-12">
+                                            <textarea type="text" rows="2" name="notes"
+                                                class="form-control input-amount-enter" id="notes_{{rowIndex}}"
+                                                placeholder="Note here">{{rowData.description}}</textarea>
+                                            <div style="float: right;">
+                                                <i (click)="submit_update(rowIndex,rowData.id,rowData.fb_user_id)"
+                                                pTooltip="Save Note" tooltipPosition="left" class="fa fa-check text-dark mr-2" aria-hidden="true"
+                                                    style="cursor: pointer;"></i>
+                                                <i (click)="deleteNotes(rowIndex,rowData.id)"
+                                                pTooltip="Delete Note" tooltipPosition="bottom" class="fa fa-trash text-dark" aria-hidden="true"
+                                                    style="cursor: pointer;"></i>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- ADD NOTES MODAL START -->
+<p-dialog [(visible)]="displayaddNotesModal" [modal]="true" [style]="{width: '40vw'}">
+    <p-header class="chat-msg-box">
+        <h5>ADD Note</h5>
+    </p-header>
+    <p-messages [(value)]="msgs"></p-messages>
+    <form [formGroup]="data" (ngSubmit)="submit()" class="form-group mt-2">
+        <textarea type="text" formControlName="notes" rows="4" [ngClass]="classForValidation('notes')" name="notes"
+            class="form-control input-amount-enter" id="notes" placeholder="Notes name here"></textarea>
+        <div *ngIf="submitted && h.notes.errors" class="invalid-feedback">
+            <div *ngIf="h.notes.errors.required">Tag is required</div>
+        </div>
+        <div *ngIf="submitted && !h.notes.errors" class="valid-feedback">
+            <div>TAG is correct</div>
+        </div>
+        <div class="mt-1 text-center">
+            <button class="btn btn-primary btn-lg w-50 mt-5 send-message-button">Submit
+                Note</button>
+        </div>
+    </form>
+</p-dialog>
+<!-- ADD NOTES MODAL END -->

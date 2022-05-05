@@ -1,0 +1,41 @@
+<div class="row">
+    <ngx-spinner bdOpacity=0.4 bdColor="rgba(51,51,51,0.42)" size="medium" color="#2457c7" type="ball-spin-fade"
+        [fullScreen]="true">
+        <p style="color: white"> Loading... </p>
+    </ngx-spinner>
+    <div class="col-md-6 col-sm-6 col-6 pt-1">
+        <span *ngIf="account_dropDown" class="text-dark font-weight-bolder">Linked Facebook Account : </span>
+        <p-dropdown *ngIf="account_dropDown" [options]="accountLists"    (onChange)="onAccountChange($event)"></p-dropdown>
+    </div>
+    <div class="col-md-6 col-sm-6 col-6 text-right right">
+        <div class="row">
+            <div class="col-md-8 col-8 col-sm-6 text-right p-0">
+                <div class="dropdown">
+                    <button (click)="menu.toggle($event)" class="btn btn-primary pb-0" type="button">
+                        <img class="user_profile mr-2" src="assets/images/blank.jpeg" />
+                        <span class="caret"></span>
+                    </button>
+                    <p-menu #menu [popup]="true" styleClass="abc" [model]="items" (click)="onLiChange($event)"></p-menu>
+                    <!--                     <ul (click)="onLiChange($event)" class="dropdown-menu">
+                        <li id="logout">
+                            <a [routerLink]="" (click)="logout()">
+                                <i class="fa fa-sign-out" style="font-size: 18px;" aria-hidden="true"></i>
+                                Log out
+                            </a>
+                        </li>
+                        <li id="profile">
+                            <a [routerLink]="['/profile']">
+                                <i class="fa fa-user" style="font-size: 18px;" aria-hidden="true"></i>
+                                Pofile
+                            </a>
+                        </li>
+                    </ul> -->
+                </div>
+            </div>
+            <div class="col-md-4 col-4 col-sm-6 pt-2 text-left p-0">
+                <h6 class="pt-2"><a class="user_name" [routerLink]="" style="text-transform: capitalize;">{{name}}</a>
+                </h6>
+            </div>
+        </div>
+    </div>
+</div>

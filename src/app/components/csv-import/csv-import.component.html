@@ -1,0 +1,21 @@
+<!-- <i (click)="openCSVModal()" class="fa fa-upload"  pTooltip="Import {{name}}" tooltipPosition="right"  title="Import"
+    aria-hidden="true"></i> -->
+
+<button type="button" (click)="openCSVModal()" class="btn btn-primary mr-3 btn6 small-icon-btn" pTooltip="Import {{name}}" tooltipPosition="right"><i class="fa fa-upload "></i></button>
+<p-dialog header="Import CSV" [(visible)]="displayCSVModal" [modal]="true" [style]="{width: '30vw'}"
+    [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+    <p-messages class="mt-5 mb-5" [(value)]="Importmsgs"></p-messages>
+    <ngx-spinner name="show_Popup_loader" bdColor="rgba(255,255,255,0.8)" size="default" color="#0073fc"
+        type="line-scale-pulse-out-rapid" [fullScreen]="false">
+        <p style="color:#000"> Loading... </p>
+    </ngx-spinner>
+    <form id="csvimportForm">
+        <input type="file" id="csvImport" accept=".csv" (change)="handleFileSelect($event)" />
+    </form>
+    <div class="mt-4 mb-4">
+         You can download <b>{{name}}</b> sample file <a [routerLink]="" (click)="downloadMyFile()">Click Here</a>   
+    </div>
+    <div *ngIf="fileLoaded" class="mt-2 mb-2">
+        <p-progressBar [value]="CSVProgressvalue"></p-progressBar>
+    </div>
+</p-dialog>

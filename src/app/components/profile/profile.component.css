@@ -1,0 +1,13 @@
+
+
+  .main .primary_delete_icons i{
+    cursor: pointer;
+    font-size: 20px;
+    color: #af5e9d;
+  }
+
+  .main .primary_delete_icons:first-child a{
+    border-right:1px solid black;
+  }
+
+  

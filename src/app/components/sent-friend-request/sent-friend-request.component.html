@@ -1,0 +1,116 @@
+<div class="row">
+    <div class="col-md-2 col-xs-12 left_side p-0">
+        <app-sidebar (messageEvent)="updateLinkedFbSelection($event)"></app-sidebar>
+    </div>
+
+
+    <div class="col-md-10 col-xs-12  right_side right_sent_friend" style="min-height:100vh;">
+        <div class="row mt-2 mb-4">
+            <!-- <div class="col-md-1"><a routerLink="/dashboard"><i class="fa fa-arrow-left arrow-font"></i></a></div> -->
+            <div class="col-md-12">
+                <h3 class="sent_dashbord"><a routerLink="/dashboard"><i
+                            class="fa fa-arrow-left arrow-font mr-3"></i></a>Dashboard</h3>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <h5> Sent friend requests </h5>
+            </div>
+            <div class="col-md-12">
+                <p-messages [(value)]="msgs"></p-messages>
+            </div>
+        </div>
+
+        <ngx-spinner [zIndex]="9999999" name="sentRequestList" bdOpacity=0.4 bdColor="rgb(253 249 252)" size="medium"
+            color="#2457c7" type="ball-spin-fade" [fullScreen]="false">
+        </ngx-spinner>
+
+
+        <div class="row mt-4" id="filter_row">
+            <div class="col-md-3 search_sent_friend">
+                <div class="input-group mb-3 ">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-search"></i></span>
+                    </div>
+                    <input type="text" placeholder="Search friend request " class="form-control"
+                        (input)="dt1.filterGlobal($event.target.value, 'contains')" />
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-md-3 send_friend_dropdown_1">
+                        <p-dropdown [options]="statusOptions" [(ngModel)]="selectedStatus" optionLabel="name"
+                            (onChange)="statusOnChange($event)" class="status_drop_down"></p-dropdown>
+
+                    </div>
+
+                    <div class="col-md-4 send_friend_dropdown">
+                        <p-dropdown [options]="sentFriendRequestOptions" [(ngModel)]="selectedSentFriendfilter"
+                            optionLabel="name" (onChange)="sentFriendRequestOnChange($event)" class="sent_friend">
+                        </p-dropdown>
+
+                    </div>
+                    <!-- <div class="col-md-1"></div> -->
+                    <div class="col-md-5 p-0 send_friend_button">
+                        <button type="button" (click)="deleteMultipleRequest()"
+                            class="btn btn-primary sent_friend_btn mr-2"><i class="fa fa-trash"></i> Delete</button>
+                        <button type="button" (click)="reset()" class="btn btn-primary sent_friend_btn"><i
+                                class="fa fa-refresh"></i> Refresh</button>
+
+                    </div>
+                    <!--  <div class="col-md-2 tex p-0 ">
+                        <button type="button" (click)="reset()" class="btn btn-primary sent_friend_btn"><i class="fa fa-refresh"></i> Refresh</button>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+
+        <div class="row table-responsive" id="sent_request_td">
+
+            <p-table #dt1 [value]="sentFriendRequests" [(selection)]="selectedsentFriendRequests" [lazy]="true"
+                (onLazyLoad)="loadCustomers($event)" responsiveLayout="scroll" dataKey="id"
+                (selectionChange)="onSelectionChange($event)" [paginator]="true" [rows]="rowsPerPage"
+                [totalRecords]="totalRecords" [loading]="loading" class="table-striped tb_sent_request"
+                [(first)]="first" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="name">Name </th>
+                        <th pSortableColumn="status">Status </th>
+                        <th pSortableColumn="message">Message sent </th>
+                        <th pSortableColumn="keywords">Keywords </th>
+                        <th pSortableColumn="date">Date </th>
+                        <th style="width: 3rem"></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-sentRequest>
+                    <tr *ngIf="!emptySentFriendRequests">
+                        <td>
+                            <p-tableCheckbox [value]="sentRequest"></p-tableCheckbox>
+                        </td>
+                        <td>{{sentRequest.request_fb_name}}</td>
+                        <td>{{sentRequest.status == 0?'Not accepted':'Accepted'}}</td>
+                        <td class="show_msg" pTooltip="{{sentRequest.message}}">{{sentRequest.message}}</td>
+                        <td>{{sentRequest.keyword == null ||sentRequest.keyword == '' ?'-':sentRequest.keyword}}</td>
+                        <td>{{sentRequest.created_at | date:"dd/MMM/yyyy"}}</td>
+                        <td><i class="fa fa-trash delete_btn" pTooltip="Delete sent request" tooltipPosition="left"
+                                (click)="deleteFriendRequest(sentRequest.id)"></i></td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr *ngIf="emptySentFriendRequests">
+                        <td colspan="7" class="text-center">No records found.</td>
+                    </tr>
+                </ng-template>
+
+                <ng-template>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

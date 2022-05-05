@@ -1,0 +1,20 @@
+.incorrectPassword{
+    background-color: rgba(223, 76, 81, 0.54);;
+    border-radius: .25rem;
+    text-align: center;
+    border: 1px #ff5050 solid;
+    font-size: 13px;
+    font-weight: 600;
+    height: auto;
+    padding: 12px 0;
+    width: 110%;
+    margin-left: -5%;
+}
+.col-6 .btn-purple {
+    background-color: #572F5B!important;
+    color: white!important;
+}
+.col-6 .btn-purple:focus {
+    border-color: #572F5B !important;
+    color: white!important;
+}

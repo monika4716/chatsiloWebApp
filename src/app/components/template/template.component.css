@@ -1,0 +1,41 @@
+
+/* Scroll Bar tag List */
+.scrollBar_cutom_templateList ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  /* Track */
+  .scrollBar_cutom_templateList ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+   
+  /* Handle */
+  .scrollBar_cutom_templateList ::-webkit-scrollbar-thumb {
+    background:#c1c1c1; 
+  }
+  
+  /* Handle on hover */
+  .scrollBar_cutom_templateList ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+
+  .main .templataddmessage i{
+    cursor: pointer;
+    font-size: 20px;
+    color: #af5e9d;
+  }
+
+  .main .scrollBar_cutom .addNewtemplate i{
+    cursor: pointer;
+    font-size: 20px;
+    color: #af5e9d;
+  }
+  p-celleditor input{
+    height: 45px;
+    width: 100%;
+    /* border:unset; */
+  }
+  p-celleditor div{
+    padding: 14px;
+    outline: unset;
+  }

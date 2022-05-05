@@ -1,0 +1,12 @@
+.loginButton{
+    float: right;
+    position: absolute;
+    width: 75px;
+    height: 43px;
+    right: 66px;
+    top: 20px;
+    background: #FFFFFF;
+    box-shadow: 0px 4px 23px rgba(0, 0, 0, 0.07);
+    border-radius: 4px;    
+    font-family: ceraproRegular !important;
+}

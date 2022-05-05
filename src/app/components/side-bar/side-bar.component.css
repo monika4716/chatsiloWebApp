@@ -1,0 +1,27 @@
+ul li a i{
+    font-size: 27px;
+}
+@media (max-width: 450px) and (min-width: 150px) {
+    .logo {
+      padding:4px !important;
+    }
+}
+@media (max-width: 750px) and (min-width: 450px) {
+    .logo {
+      padding:8px !important;
+    }
+}
+@media (max-width: 950px) and (min-width: 750px) {
+    .logo {
+      padding:11px !important;
+    }
+}
+@media (max-width: 991px) and (min-width: 150px) {
+    .sidebarafter {
+      text-align:center !important;
+    }
+}
+ul>li>a{
+  padding: 14px 14px !important;
+  display: block !important;
+}
